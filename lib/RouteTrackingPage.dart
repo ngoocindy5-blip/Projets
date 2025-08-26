@@ -1,21 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: RouteTrackingPage(),
-    );
-  }
-}
 
 class RouteTrackingPage extends StatefulWidget {
+  const RouteTrackingPage({super.key});
+
   @override
   _RouteTrackingPageState createState() => _RouteTrackingPageState();
 }
@@ -88,11 +77,11 @@ class _RouteTrackingPageState extends State<RouteTrackingPage> {
             ),
             SizedBox(height: 10),
             Text(
-              'Statut : $ _status',
+              'Statut$_status',
               style: TextStyle(fontSize: 16),
             ),
             Text(
-              '$_eta',
+              _eta,
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
             SizedBox(height: 20),
@@ -115,7 +104,7 @@ class _RouteTrackingPageState extends State<RouteTrackingPage> {
                 print('Mettre à jour la position');
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
+                backgroundColor: Colors.blue,
                 minimumSize: Size(double.infinity, 50),
               ),
               child: Text('Rafraîchir', style: TextStyle(color: Colors.white)),

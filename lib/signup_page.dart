@@ -1,20 +1,9 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SignUpPage(),
-    );
-  }
-}
 
 class SignUpPage extends StatelessWidget {
+  const SignUpPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +86,7 @@ class SignUpPage extends StatelessWidget {
                 print('Account Created');
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.grey[800],
+                backgroundColor: Colors.grey[800],
                 minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),

@@ -1,20 +1,8 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: LoginPage(),
-    );
-  }
-}
-
 class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,7 +79,7 @@ class LoginPage extends StatelessWidget {
                 print('Logged in');
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.grey[800],
+                backgroundColor: Colors.grey[800],
                 minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -174,7 +162,7 @@ class ForgotPasswordPage extends StatelessWidget {
                 print('Link Sent');
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.grey[800],
+                backgroundColor: Colors.grey[800],
                 minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),

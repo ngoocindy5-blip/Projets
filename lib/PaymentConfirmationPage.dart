@@ -1,20 +1,8 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: PaymentConfirmationPage(),
-    );
-  }
-}
-
 class PaymentConfirmationPage extends StatelessWidget {
+  const PaymentConfirmationPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,7 +73,7 @@ class PaymentConfirmationPage extends StatelessWidget {
                     print('Download Receipt (PDF)');
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.green,
+                    backgroundColor: Colors.green,
                     minimumSize: Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),

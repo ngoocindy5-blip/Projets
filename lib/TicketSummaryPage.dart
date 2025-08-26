@@ -2,21 +2,9 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: TicketSummaryPage(),
-    );
-  }
-}
-
 class TicketSummaryPage extends StatelessWidget {
+  const TicketSummaryPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,21 +136,23 @@ class TicketSummaryPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             // Bouton Next
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PaymentMethodPage()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.orange,
-                minimumSize: Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PaymentMethodPage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
+                child: Text('Next', style: TextStyle(color: Colors.white)),
               ),
-              child: Text('Next', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -217,21 +207,23 @@ class PaymentMethodPage extends StatelessWidget {
               child: Text('+ Add payment method', style: TextStyle(color: Colors.orange)),
             ),
             Spacer(),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PaymentSuccessPage()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                minimumSize: Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PaymentSuccessPage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
+                child: Text('Payment', style: TextStyle(color: Colors.white)),
               ),
-              child: Text('Payment', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -269,18 +261,20 @@ class PaymentSuccessPage extends StatelessWidget {
               style: TextStyle(fontSize: 18, color: Colors.grey),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('/'));
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                minimumSize: 50,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.popUntil(context, ModalRoute.withName('/'));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
+                child: Text('Back to Home', style: TextStyle(color: Colors.white)),
               ),
-              child: Text('Back to Home', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

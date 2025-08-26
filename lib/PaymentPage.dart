@@ -1,20 +1,8 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: PaymentPage(),
-    );
-  }
-}
-
 class PaymentPage extends StatelessWidget {
+  const PaymentPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,7 +119,7 @@ class PaymentPage extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.yellow[700],
+                backgroundColor: Colors.yellow[700],
                 minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25),
@@ -180,7 +168,7 @@ class PaymentSuccessPage extends StatelessWidget {
                 Navigator.popUntil(context, ModalRoute.withName('/'));
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.yellow[700],
+                backgroundColor: Colors.yellow[700],
                 minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25),

@@ -1,20 +1,8 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: BusDetailPage(),
-    );
-  }
-}
-
 class BusDetailPage extends StatelessWidget {
+  const BusDetailPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,7 +86,7 @@ class BusDetailPage extends StatelessWidget {
                 print('Réservation effectuée');
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
+                backgroundColor: Colors.blue,
                 minimumSize: Size(double.infinity, 50),
               ),
               child: Text('Réserver maintenant', style: TextStyle(color: Colors.white)),
