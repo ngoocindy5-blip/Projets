@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "190881551433",
+    "project_id": "buseasy-c6b28",
+    "storage_bucket": "buseasy-c6b28.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190881551433:android:aba361bcba7602e462db98",
+        "android_client_info": {
+          "package_name": "com.example.bus_easy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190881551433-g4nv6hvies5clapsf68rja4po5rjpcma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0TbkGWe62lV_8qwwhwBOe8FU_7CmVYvE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190881551433-g4nv6hvies5clapsf68rja4po5rjpcma.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "190881551433-3gbovt9ghp9e6vb11c7mung1422mi1f9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.busEasy"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
