@@ -61,7 +61,7 @@ class _RouteTrackingPageState extends State<RouteTrackingPage> {
             ),
             SizedBox(height: 20),
             Text(
-              'Bus VIP - Paris-Lyon',
+              'Bus VIP - Yaounde-Douala',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
@@ -89,7 +89,7 @@ class _RouteTrackingPageState extends State<RouteTrackingPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Prochain arrêt : Lyon Centre',
+                  'Prochain arrêt : Douala',
                   style: TextStyle(fontSize: 16),
                 ),
                 Text(

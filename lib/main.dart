@@ -1,5 +1,16 @@
-import 'package:bus_easy/Home_Page.dart';
+import 'package:bus_easy/admin/AdminDashboard.dart';
+import 'package:bus_easy/admin/AdminLoginPage.dart';
+import 'package:bus_easy/User/Home_Page.dart';
+import 'package:bus_easy/User/PaymentConfirmationPage.dart';
+import 'package:bus_easy/admin/PricingManagementPage.dart';
+import 'package:bus_easy/User/ProfilePage.dart';
+import 'package:bus_easy/User/RouteTrackingPage.dart';
+import 'package:bus_easy/User/TicketSummaryPage.dart';
+import 'package:bus_easy/User/login_page.dart';
+import 'package:bus_easy/admin/ReservationsManagementPage.dart';
 import 'package:flutter/material.dart';
+
+import 'admin/UserManagementPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +42,8 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: HomePage(),
+      home:HomePage(
+      ),
     );
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 class TicketSummaryPage extends StatelessWidget {
@@ -27,7 +25,7 @@ class TicketSummaryPage extends StatelessWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
             ),
             Text(
-              '\$15 - 2 Ticket',
+              '\3500 - 1 Ticket',
               style: TextStyle(fontSize: 18, color: Colors.grey),
             ),
             SizedBox(height: 20),
@@ -37,9 +35,21 @@ class TicketSummaryPage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             TextField(
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                labelText: 'First name',
-                labelStyle: TextStyle(color: Colors.grey),
+                labelText: 'Nom',
+                labelStyle: TextStyle(color: Colors.white),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              style: TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: 'Prenom',
+                labelStyle: TextStyle(color: Colors.white),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey),
                 ),
@@ -47,9 +57,10 @@ class TicketSummaryPage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             TextField(
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                labelText: 'Last name',
-                labelStyle: TextStyle(color: Colors.grey),
+                labelText: 'Email',
+                labelStyle: TextStyle(color: Colors.white),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey),
                 ),
@@ -57,19 +68,10 @@ class TicketSummaryPage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             TextField(
-              decoration: InputDecoration(
-                labelText: 'Email address',
-                labelStyle: TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey),
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            TextField(
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Date',
-                labelStyle: TextStyle(color: Colors.grey),
+                labelStyle: TextStyle(color: Colors.white),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey),
                 ),
@@ -78,9 +80,10 @@ class TicketSummaryPage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             TextField(
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                labelText: 'Time',
-                labelStyle: TextStyle(color: Colors.grey),
+                labelText: 'heure',
+                labelStyle: TextStyle(color: Colors.white),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey),
                 ),
@@ -90,13 +93,14 @@ class TicketSummaryPage extends StatelessWidget {
             SizedBox(height: 10),
             DropdownButtonFormField<String>(
               decoration: InputDecoration(
-                labelText: 'Country',
-                labelStyle: TextStyle(color: Colors.grey),
+                labelText: 'ville',
+                labelStyle: TextStyle(color: Colors.white),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey),
                 ),
               ),
-              items: <String>['Choose your country', 'France', 'Nigeria', 'Germany']
+              dropdownColor: Colors.black,
+              items: <String>['selectionnez votre ville', 'Yaounde', 'Douala']
                   .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
