@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AdminLoginPage extends StatefulWidget {
-  const AdminLoginPage({Key? key}) : super(key: key);
+  const AdminLoginPage({super.key});
 
   @override
   State<AdminLoginPage> createState() => _AdminLoginPageState();
@@ -22,23 +23,42 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
   }
 
   Future<void> _handleLogin() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
+    if (!_formKey.currentState!.validate()) return;
 
-      // Simuler une requête de connexion
-      await Future.delayed(const Duration(seconds: 2));
+    setState(() => _isLoading = true);
 
-      // Ici, vous ajouterez votre logique d'authentification
-      // Par exemple : appel API, vérification des credentials, etc.
+    try {
+      final email = _usernameController.text.trim();
+      final password = _passwordController.text.trim();
 
-      setState(() {
-        _isLoading = false;
-      });
+      // Connexion via Firebase Auth
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      // Navigation vers le dashboard admin (à implémenter)
-      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdminDashboard()));
+      // Si connexion réussie → redirection
+      setState(() => _isLoading = false);
+      _showSuccessSnackBar('Connexion réussie');
+      // Remplace ceci par ta page AdminDashboard
+      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => AdminDashboard()));
+    } on FirebaseAuthException catch (e) {
+      setState(() => _isLoading = false);
+      String errorMessage;
+      switch (e.code) {
+        case 'user-not-found':
+          errorMessage = 'Aucun compte trouvé pour cet email.';
+          break;
+        case 'wrong-password':
+          errorMessage = 'Mot de passe incorrect.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'Adresse email invalide.';
+          break;
+        default:
+          errorMessage = 'Erreur : ${e.message}';
+      }
+      _showErrorSnackBar(errorMessage);
     }
   }
 
@@ -81,12 +101,8 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Logo et titre
-                      Icon(
-                        Icons.admin_panel_settings,
-                        size: 64,
-                        color: Colors.blue.shade600,
-                      ),
+                      Icon(Icons.admin_panel_settings,
+                          size: 64, color: Colors.blue.shade600),
                       const SizedBox(height: 16),
                       Text(
                         'Administration',
@@ -106,48 +122,39 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                       ),
                       const SizedBox(height: 32),
 
-                      // Champ nom d'utilisateur
+                      // Email
                       TextFormField(
                         controller: _usernameController,
-                        decoration: InputDecoration(
-                          labelText: 'Nom d\'utilisateur',
-                          hintText: 'Entrez votre nom d\'utilisateur',
-                          prefixIcon: Icon(Icons.person_outline, color: Colors.grey.shade600),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.blue.shade600),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey.shade50,
+                        decoration: _inputDecoration(
+                          label: "Email",
+                          hint: "Entrez votre adresse email",
+                          icon: Icons.person_outline,
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Veuillez saisir votre nom d\'utilisateur';
+                            return 'Veuillez saisir votre email';
+                          }
+                          if (!value.contains('@')) {
+                            return 'Veuillez saisir un email valide';
                           }
                           return null;
                         },
                       ),
                       const SizedBox(height: 16),
 
-                      // Champ mot de passe
+                      // Mot de passe
                       TextFormField(
                         controller: _passwordController,
                         obscureText: !_isPasswordVisible,
-                        decoration: InputDecoration(
-                          labelText: 'Mot de passe',
-                          hintText: 'Entrez votre mot de passe',
-                          prefixIcon: Icon(Icons.lock_outline, color: Colors.grey.shade600),
-                          suffixIcon: IconButton(
+                        decoration: _inputDecoration(
+                          label: "Mot de passe",
+                          hint: "Entrez votre mot de passe",
+                          icon: Icons.lock_outline,
+                          suffix: IconButton(
                             icon: Icon(
-                              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                              _isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                               color: Colors.grey.shade600,
                             ),
                             onPressed: () {
@@ -156,20 +163,6 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                               });
                             },
                           ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.blue.shade600),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey.shade50,
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -183,26 +176,18 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                       ),
                       const SizedBox(height: 12),
 
-                      // Lien mot de passe oublié
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () {
-                            // Implémenter la logique de récupération de mot de passe
-                            _showForgotPasswordDialog();
-                          },
+                          onPressed: _showForgotPasswordDialog,
                           child: Text(
                             'Mot de passe oublié ?',
-                            style: TextStyle(
-                              color: Colors.blue.shade600,
-                              fontSize: 14,
-                            ),
+                            style: TextStyle(color: Colors.blue.shade600),
                           ),
                         ),
                       ),
                       const SizedBox(height: 24),
 
-                      // Bouton de connexion
                       ElevatedButton(
                         onPressed: _isLoading ? null : _handleLogin,
                         style: ElevatedButton.styleFrom(
@@ -212,7 +197,6 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          elevation: 2,
                         ),
                         child: _isLoading
                             ? const SizedBox(
@@ -232,36 +216,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-
-                      // Informations de sécurité
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.orange.shade50,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.orange.shade200),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.security,
-                              color: Colors.orange.shade700,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                'Accès réservé aux administrateurs autorisés',
-                                style: TextStyle(
-                                  color: Colors.orange.shade700,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      _buildSecurityNotice(),
                     ],
                   ),
                 ),
@@ -273,15 +228,41 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
     );
   }
 
+  InputDecoration _inputDecoration({
+    required String label,
+    required String hint,
+    required IconData icon,
+    Widget? suffix,
+  }) {
+    return InputDecoration(
+      labelText: label,
+      hintText: hint,
+      prefixIcon: Icon(icon, color: Colors.grey.shade600),
+      suffixIcon: suffix,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: Colors.grey.shade300),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: Colors.grey.shade300),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: Colors.blue.shade600),
+      ),
+      filled: true,
+      fillColor: Colors.grey.shade50,
+    );
+  }
+
   void _showForgotPasswordDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         final emailController = TextEditingController();
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: const Text('Récupération de mot de passe'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -310,10 +291,16 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
               child: const Text('Annuler'),
             ),
             ElevatedButton(
-              onPressed: () {
-                // Implémenter la logique d'envoi d'email de récupération
-                Navigator.of(context).pop();
-                _showSuccessSnackBar('Email de récupération envoyé');
+              onPressed: () async {
+                final email = emailController.text.trim();
+                try {
+                  await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+                  Navigator.of(context).pop();
+                  _showSuccessSnackBar('Email de récupération envoyé');
+                } catch (e) {
+                  Navigator.of(context).pop();
+                  _showErrorSnackBar('Erreur lors de l\'envoi : $e');
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue.shade600,
@@ -327,15 +314,51 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
     );
   }
 
+  Widget _buildSecurityNotice() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.orange.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.orange.shade200),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.security, color: Colors.orange.shade700, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Accès réservé aux administrateurs autorisés',
+              style: TextStyle(
+                color: Colors.orange.shade700,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.green.shade600,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    );
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red.shade600,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
