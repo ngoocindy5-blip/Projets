@@ -76,12 +76,18 @@ class _PricingManagementPageState extends State<PricingManagementPage> {
     // Filtrer par recherche
     if (_searchController.text.isNotEmpty) {
       final searchTerm = _searchController.text.toLowerCase();
-      filtered = filtered.where((price) =>
-      price['origin'].toLowerCase().contains(searchTerm) ||
-          price['destination'].toLowerCase().contains(searchTerm) ||
-          price['id'].toLowerCase().contains(searchTerm) ||
-          price['company'].toLowerCase().contains(searchTerm)).toList();
+      filtered = filtered.where((price) {
+        final origin = (price['origin'] as String?)?.toLowerCase() ?? '';
+        final destination = (price['destination'] as String?)?.toLowerCase() ?? '';
+        final id = (price['id'] as String?)?.toLowerCase() ?? '';
+        final company = (price['company'] as String?)?.toLowerCase() ?? '';
+        return origin.contains(searchTerm) ||
+            destination.contains(searchTerm) ||
+            id.contains(searchTerm) ||
+            company.contains(searchTerm);
+      }).toList();
     }
+
 
     return filtered;
   }

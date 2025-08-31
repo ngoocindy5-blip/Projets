@@ -1,980 +1,1877 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+
+void main() {
+  runApp(GlobalVoyageAdminApp());
+}
+
+class GlobalVoyageAdminApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Global Voyage Admin',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        fontFamily: 'Roboto',
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: AdminDashboard(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
 
 class AdminDashboard extends StatefulWidget {
-  const AdminDashboard({Key? key}) : super(key: key);
-
   @override
-  State<AdminDashboard> createState() => _AdminDashboardState();
+  _AdminDashboardState createState() => _AdminDashboardState();
 }
 
 class _AdminDashboardState extends State<AdminDashboard> {
-  final TextEditingController _searchController = TextEditingController();
   int _selectedIndex = 0;
+  String _selectedRoute = 'Tous';
+  String _selectedStatus = 'Tous';
 
-  // Données simulées pour les statistiques
-  final List<Map<String, dynamic>> _travelStats = [
-    {'month': 'Jan', 'bookings': 45, 'revenue': 25000},
-    {'month': 'Fév', 'bookings': 52, 'revenue': 32000},
-    {'month': 'Mar', 'bookings': 38, 'revenue': 28000},
-    {'month': 'Avr', 'bookings': 65, 'revenue': 45000},
-    {'month': 'Mai', 'bookings': 72, 'revenue': 52000},
-  ];
-
-  final List<Map<String, dynamic>> _recentBookings = [
+  final List<Map<String, dynamic>> _stats = [
     {
-      'id': 'BK001',
-      'destination': 'Yaounde',
-      'client': 'CINDY',
-      'status': 'confirme',
-      'date': '2025-01-15',
+      'title': 'Réservations',
+      'value': '1,247',
+      'icon': Icons.calendar_today,
+      'color': Colors.blue,
+      'change': '+12%'
     },
     {
-      'id': 'BK002',
-      'destination': 'DOUALA',
-      'client': 'ARTHUR',
+      'title': 'Revenus',
+      'value': '15.4M',
+      'icon': Icons.attach_money,
+      'color': Colors.green,
+      'change': '+18%'
+    },
+    {
+      'title': 'Utilisateurs',
+      'value': '856',
+      'icon': Icons.people,
+      'color': Colors.purple,
+      'change': '+5%'
+    },
+    {
+      'title': 'Remboursements',
+      'value': '23',
+      'icon': Icons.refresh,
+      'color': Colors.orange,
+      'change': 'En attente'
+    },
+  ];
+
+  final List<Map<String, dynamic>> _reservations = [
+    {
+      'id': 'GV001234',
+      'user': 'Hassan Oulahe',
+      'route': 'Yaoundé → Douala',
+      'date': '2024-09-15',
+      'time': '08:30',
+      'price': 15000,
+      'status': 'confirmé',
+      'payment': 'payé',
+      'phone': '+237 6XX XX XX XX'
+    },
+    {
+      'id': 'GV001235',
+      'user': 'Marie Ngono',
+      'route': 'Douala → Yaoundé',
+      'date': '2024-09-16',
+      'time': '14:00',
+      'price': 15000,
       'status': 'en attente',
-      'date': '2025-01-14',
+      'payment': 'en attente',
+      'phone': '+237 6XX XX XX XX'
+    },
+    {
+      'id': 'GV001236',
+      'user': 'Jean Mbarga',
+      'route': 'Yaoundé → Douala',
+      'date': '2024-09-14',
+      'time': '10:15',
+      'price': 25000,
+      'status': 'annulé',
+      'payment': 'remboursé',
+      'phone': '+237 6XX XX XX XX'
+    },
+    {
+      'id': 'GV001237',
+      'user': 'Fatima Bello',
+      'route': 'Douala → Yaoundé',
+      'date': '2024-09-17',
+      'time': '12:45',
+      'price': 15000,
+      'status': 'confirmé',
+      'payment': 'payé',
+      'phone': '+237 6XX XX XX XX'
     },
   ];
 
+  final List<Map<String, dynamic>> _tarifs = [
+    {
+      'id': 1,
+      'route': 'Yaoundé → Douala',
+      'category': 'Standard',
+      'price': 15000,
+      'duration': '4h30',
+      'lastUpdate': '2024-08-30'
+    },
+    {
+      'id': 2,
+      'route': 'Douala → Yaoundé',
+      'category': 'Standard',
+      'price': 15000,
+      'duration': '4h30',
+      'lastUpdate': '2024-08-30'
+    },
+    {
+      'id': 3,
+      'route': 'Yaoundé → Douala',
+      'category': 'VIP',
+      'price': 25000,
+      'duration': '4h00',
+      'lastUpdate': '2024-08-30'
+    },
+    {
+      'id': 4,
+      'route': 'Douala → Yaoundé',
+      'category': 'VIP',
+      'price': 25000,
+      'duration': '4h00',
+      'lastUpdate': '2024-08-30'
+    },
+  ];
 
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
+  final List<Map<String, dynamic>> _users = [
+    {
+      'id': 1,
+      'name': 'Hassan Oulahe',
+      'email': 'hassan@email.com',
+      'phone': '+237 6XX XX XX XX',
+      'status': 'actif',
+      'joinDate': '2024-01-15',
+      'totalTrips': 12,
+      'totalSpent': 180000
+    },
+    {
+      'id': 2,
+      'name': 'Marie Ngono',
+      'email': 'marie@email.com',
+      'phone': '+237 6XX XX XX XX',
+      'status': 'actif',
+      'joinDate': '2024-02-20',
+      'totalTrips': 8,
+      'totalSpent': 120000
+    },
+    {
+      'id': 3,
+      'name': 'Jean Mbarga',
+      'email': 'jean@email.com',
+      'phone': '+237 6XX XX XX XX',
+      'status': 'suspendu',
+      'joinDate': '2024-03-10',
+      'totalTrips': 3,
+      'totalSpent': 45000
+    },
+    {
+      'id': 4,
+      'name': 'Fatima Bello',
+      'email': 'fatima@email.com',
+      'phone': '+237 6XX XX XX XX',
+      'status': 'actif',
+      'joinDate': '2024-04-05',
+      'totalTrips': 6,
+      'totalSpent': 90000
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
-      body: SafeArea(
-        child: Row(
-          children: [
-            // Sidebar
-            Container(
-              width: 280,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(2, 0),
+      body: Row(
+        children: [
+          // Sidebar
+          Container(
+            width: 260,
+            color: Colors.white,
+            child: Column(
+              children: [
+                // Header du sidebar
+                Container(
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.blue[600],
                   ),
-                ],
-              ),
-              child: _buildSidebar(),
-            ),
-            // Main content
-            Expanded(
-              child: Column(
-                children: [
-                  _buildTopBar(),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
+                  child: Row(
+                    children: [
+                      Icon(Icons.directions_bus, color: Colors.white, size: 32),
+                      SizedBox(width: 12),
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildWelcomeCard(),
-                          const SizedBox(height: 24),
-                          _buildStatsCards(),
-                          const SizedBox(height: 24),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Column(
-                                  children: [
-                                    _buildRecentBookings(),
-                                    const SizedBox(height: 24),
-                                    _buildQuickActions(),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 24),
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    _buildStatsChart(),
-                                    const SizedBox(height: 24),
-                                    _buildTopGuides(),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          Text(
+                            'Global Voyage',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Admin Panel',
+                            style: TextStyle(color: Colors.white70, fontSize: 12),
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+
+                // Menu items
+                Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.all(8),
+                    children: [
+                      _buildMenuItem(0, Icons.dashboard, 'Tableau de Bord'),
+                      _buildMenuItem(1, Icons.calendar_today, 'Réservations'),
+                      _buildMenuItem(2, Icons.attach_money, 'Tarifs'),
+                      _buildMenuItem(3, Icons.people, 'Utilisateurs'),
+                      _buildMenuItem(4, Icons.settings, 'Paramètres'),
+                    ],
+                  ),
+                ),
+
+                // Admin info
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    border: Border(top: BorderSide(color: Colors.grey[300]!)),
+                  ),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Colors.blue[600],
+                        child: Text('AD', style: TextStyle(color: Colors.white)),
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Admin User',
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            Text(
+                              'Administrateur',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+
+          // Main content
+          Expanded(
+            child: Column(
+              children: [
+                // Top bar
+                Container(
+                  height: 70,
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 1,
+                        blurRadius: 3,
+                        offset: Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        _getPageTitle(),
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                      Spacer(),
+                      IconButton(
+                        icon: Stack(
+                          children: [
+                            Icon(Icons.notifications, color: Colors.grey[600]),
+                            Positioned(
+                              right: 0,
+                              top: 0,
+                              child: Container(
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        onPressed: () {},
+                      ),
+                      SizedBox(width: 16),
+                      Container(
+                        width: 200,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Rechercher...',
+                            prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(color: Colors.grey[300]!),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Content
+                Expanded(
+                  child: Container(
+                    color: Colors.grey[50],
+                    child: _buildContent(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildSidebar() {
-    final menuItems = [
-      {'icon': Icons.dashboard_outlined, 'label': 'Tableau de bord', 'index': 0},
-      {'icon': Icons.airplane_ticket_outlined, 'label': 'Réservations', 'index': 1},
-      {'icon': Icons.location_on_outlined, 'label': 'Destinations', 'index': 2},
-      {'icon': Icons.tour_outlined, 'label': 'Circuits', 'index': 3},
-      {'icon': Icons.people_outline, 'label': 'Guides', 'index': 4},
-      {'icon': Icons.group_outlined, 'label': 'Clients', 'index': 5},
-    ];
-
-    return Column(
-      children: [
-        // Logo
-        Container(
-          padding: const EdgeInsets.all(24),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.blue.shade600, Colors.purple.shade600],
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(Icons.travel_explore, color: Colors.white, size: 24),
-              ),
-              const SizedBox(width: 12),
-              const Text(
-                'TravelAdmin',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-            ],
+  Widget _buildMenuItem(int index, IconData icon, String title) {
+    bool isSelected = _selectedIndex == index;
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 2),
+      child: ListTile(
+        leading: Icon(
+          icon,
+          color: isSelected ? Colors.blue[600] : Colors.grey[600],
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: isSelected ? Colors.blue[600] : Colors.grey[800],
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
           ),
         ),
-
-        // Menu Overview
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'APERÇU',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey.shade500,
-                letterSpacing: 1,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // Menu items
-        ...menuItems.map((item) => _buildMenuItem(
-          icon: item['icon'] as IconData,
-          label: item['label'] as String,
-          isSelected: _selectedIndex == item['index'],
-          onTap: () => setState(() => _selectedIndex = item['index'] as int),
-        )),
-
-        const Spacer(),
-
-        // Settings section
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'PARAMÈTRES',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey.shade500,
-                letterSpacing: 1,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        _buildMenuItem(
-          icon: Icons.settings_outlined,
-          label: 'Paramètres',
-          isSelected: false,
-          onTap: () {},
-        ),
-        _buildMenuItem(
-          icon: Icons.logout,
-          label: 'Déconnexion',
-          isSelected: false,
-          onTap: () {},
-        ),
-        const SizedBox(height: 24),
-      ],
+        selected: isSelected,
+        selectedTileColor: Colors.blue[50],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        onTap: () {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+      ),
     );
   }
 
-  Widget _buildMenuItem({
-    required IconData icon,
-    required String label,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: onTap,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: isSelected ? Colors.blue.shade50 : Colors.transparent,
-              borderRadius: BorderRadius.circular(12),
-            ),
+  String _getPageTitle() {
+    switch (_selectedIndex) {
+      case 0: return 'Tableau de Bord';
+      case 1: return 'Gestion des Réservations';
+      case 2: return 'Gestion des Tarifs';
+      case 3: return 'Gestion des Utilisateurs';
+      case 4: return 'Paramètres';
+      default: return 'Global Voyage Admin';
+    }
+  }
+
+  Widget _buildContent() {
+    switch (_selectedIndex) {
+      case 0: return _buildDashboard();
+      case 1: return _buildReservations();
+      case 2: return _buildTarifs();
+      case 3: return _buildUsers();
+      case 4: return _buildSettings();
+      default: return _buildDashboard();
+    }
+  }
+
+  Widget _buildDashboard() {
+    return Padding(
+      padding: EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Stats cards
+          Row(
+            children: _stats.map((stat) => Expanded(
+              child: Container(
+                margin: EdgeInsets.only(right: _stats.indexOf(stat) < _stats.length - 1 ? 16 : 0),
+                child: _buildStatCard(stat),
+              ),
+            )).toList(),
+          ),
+
+          SizedBox(height: 24),
+
+          Expanded(
             child: Row(
               children: [
-                Icon(
-                  icon,
-                  color: isSelected ? Colors.blue.shade600 : Colors.grey.shade600,
-                  size: 20,
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  label,
-                  style: TextStyle(
-                    color: isSelected ? Colors.blue.shade600 : Colors.grey.shade700,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTopBar() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Search bar
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Rechercher...',
-                  border: InputBorder.none,
-                  icon: Icon(Icons.search, color: Colors.grey.shade500),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-
-          // Notifications
-          IconButton(
-            onPressed: () {},
-            icon: Stack(
-              children: [
-                Icon(Icons.notifications_outlined, color: Colors.grey.shade600),
-                Positioned(
-                  right: 0,
-                  top: 0,
+                // Recent reservations
+                Expanded(
+                  flex: 2,
                   child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-
-          // Messages
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.message_outlined, color: Colors.grey.shade600),
-          ),
-          const SizedBox(width: 16),
-
-          // User profile
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.blue.shade100,
-                child: Text(
-                  'AD',
-                  style: TextStyle(
-                    color: Colors.blue.shade600,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Admin Principal',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                  ),
-                  Text(
-                    'Administrateur',
-                    style: TextStyle(
-                      color: Colors.grey.shade500,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWelcomeCard() {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.blue.shade600,
-            Colors.purple.shade600,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Optimisez vos Voyages avec',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const Text(
-                  'une Gestion Professionnelle',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.blue.shade600,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text('Voir Plus'),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(50),
-            ),
-            child: const Icon(
-              Icons.flight_takeoff,
-              color: Colors.white,
-              size: 50,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatsCards() {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildStatCard(
-            title: 'Réservations',
-            value: '1,234',
-            change: '+12%',
-            icon: Icons.airplane_ticket,
-            color: Colors.blue,
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildStatCard(
-            title: 'Revenus',
-            value: '€125,430',
-            change: '+8.5%',
-            icon: Icons.attach_money,
-            color: Colors.green,
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildStatCard(
-            title: 'Guides Actifs',
-            value: '87',
-            change: '+3%',
-            icon: Icons.person,
-            color: Colors.orange,
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildStatCard(
-            title: 'Satisfaction',
-            value: '94%',
-            change: '+2%',
-            icon: Icons.star,
-            color: Colors.purple,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatCard({
-    required String title,
-    required String value,
-    required String change,
-    required IconData icon,
-    required Color color,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, color: color, size: 20),
-              ),
-              Text(
-                change,
-                style: TextStyle(
-                  color: Colors.green.shade600,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey.shade600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRecentBookings() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Réservations Récentes',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: const Text('Voir tout'),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          ..._recentBookings.map((booking) => _buildBookingItem(booking)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBookingItem(Map<String, dynamic> booking) {
-    Color statusColor;
-    String statusText;
-
-    switch (booking['status']) {
-      case 'confirmed':
-        statusColor = Colors.green;
-        statusText = 'Confirmée';
-        break;
-      case 'pending':
-        statusColor = Colors.orange;
-        statusText = 'En attente';
-        break;
-      default:
-        statusColor = Colors.blue;
-        statusText = 'Terminée';
-    }
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: Colors.blue.shade100,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              Icons.location_on,
-              color: Colors.blue.shade600,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  booking['destination'],
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  booking['client'],
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '€${booking['amount']}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  statusText,
-                  style: TextStyle(
-                    color: statusColor,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQuickActions() {
-    final actions = [
-      {
-        'title': 'Nouvelle Réservation',
-        'icon': Icons.add_circle_outline,
-        'color': Colors.blue,
-      },
-      {
-        'title': 'Gérer Destinations',
-        'icon': Icons.map_outlined,
-        'color': Colors.green,
-      },
-      {
-        'title': 'Rapports',
-        'icon': Icons.analytics_outlined,
-        'color': Colors.orange,
-      },
-      {
-        'title': 'Support Client',
-        'icon': Icons.support_agent,
-        'color': Colors.purple,
-      },
-    ];
-
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Actions Rapides',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 1.5,
-            ),
-            itemCount: actions.length,
-            itemBuilder: (context, index) {
-              final action = actions[index];
-              return Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: () {},
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: (action['color'] as Color).withOpacity(0.1),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
                     ),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          action['icon'] as IconData,
-                          color: action['color'] as Color,
-                          size: 24,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Réservations Récentes',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () => setState(() => _selectedIndex = 1),
+                              child: Text('Voir tout'),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          action['title'] as String,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: action['color'] as Color,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
+                        SizedBox(height: 16),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: 3,
+                            itemBuilder: (context, index) {
+                              var reservation = _reservations[index];
+                              return _buildReservationCard(reservation, isCompact: true);
+                            },
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildStatsChart() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Statistiques',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Icon(Icons.more_horiz, color: Colors.grey.shade400),
-            ],
-          ),
-          const SizedBox(height: 24),
+                SizedBox(width: 16),
 
-          // Graphique simple simulé
-          Container(
-            height: 150,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: _travelStats.map((stat) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      '${stat['bookings']}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Container(
-                      width: 30,
-                      height: (stat['bookings'] as int) * 2.0,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [
-                            Colors.blue.shade600,
-                            Colors.purple.shade400,
-                          ],
+                // Quick actions
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: Offset(0, 1),
                         ),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
+                      ],
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      stat['month'],
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.grey.shade600,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Actions Rapides',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              _buildQuickAction(
+                                'Nouvelle Réservation',
+                                Icons.add_circle,
+                                Colors.blue,
+                                    () => setState(() => _selectedIndex = 1),
+                              ),
+                              SizedBox(height: 12),
+                              _buildQuickAction(
+                                'Modifier Tarifs',
+                                Icons.edit,
+                                Colors.green,
+                                    () => setState(() => _selectedIndex = 2),
+                              ),
+                              SizedBox(height: 12),
+                              _buildQuickAction(
+                                'Gérer Utilisateurs',
+                                Icons.people,
+                                Colors.purple,
+                                    () => setState(() => _selectedIndex = 3),
+                              ),
+                              SizedBox(height: 12),
+                              _buildQuickAction(
+                                'Remboursements',
+                                Icons.refresh,
+                                Colors.orange,
+                                    () => _showRefundDialog(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTopGuides() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Top Guides',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: const Text('Voir tout'),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGuideItem(Map<String, dynamic> guide) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: Colors.orange.shade100,
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: Center(
-              child: Text(
-                guide['avatar'],
-                style: const TextStyle(fontSize: 20),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  guide['name'],
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
                   ),
-                ),
-                Text(
-                  guide['specialty'],
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 12,
-                  ),
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.star, color: Colors.amber, size: 12),
-                    Text(
-                      ' ${guide['rating']} • ${guide['tours']} tours',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
           ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.add, size: 16),
-            style: IconButton.styleFrom(
-              backgroundColor: Colors.blue.shade50,
-              foregroundColor: Colors.blue.shade600,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatCard(Map<String, dynamic> stat) {
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 3,
+            offset: Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: stat['color'].withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  stat['icon'],
+                  color: stat['color'],
+                  size: 24,
+                ),
+              ),
+              Text(
+                stat['change'],
+                style: TextStyle(
+                  color: stat['change'].startsWith('+') ? Colors.green : Colors.orange,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12),
+          Text(
+            stat['value'],
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[800],
             ),
+          ),
+          Text(
+            stat['title'],
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickAction(String title, IconData icon, Color color, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: color.withOpacity(0.3)),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 20),
+            SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            Icon(Icons.arrow_forward_ios, color: color, size: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReservations() {
+    return Padding(
+      padding: EdgeInsets.all(24),
+      child: Column(
+        children: [
+          // Filters
+          Row(
+            children: [
+              Container(
+                width: 200,
+                child: DropdownButtonFormField<String>(
+                  value: _selectedRoute,
+                  decoration: InputDecoration(
+                    labelText: 'Route',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  items: ['Tous', 'Yaoundé → Douala', 'Douala → Yaoundé'].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedRoute = newValue!;
+                    });
+                  },
+                ),
+              ),
+              SizedBox(width: 16),
+              Container(
+                width: 200,
+                child: DropdownButtonFormField<String>(
+                  value: _selectedStatus,
+                  decoration: InputDecoration(
+                    labelText: 'Statut',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  items: ['Tous', 'confirmé', 'en attente', 'annulé'].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedStatus = newValue!;
+                    });
+                  },
+                ),
+              ),
+              Spacer(),
+              ElevatedButton.icon(
+                onPressed: () => _showAddReservationDialog(),
+                icon: Icon(Icons.add),
+                label: Text('Nouvelle Réservation'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue[600],
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 24),
+
+          // Reservations list
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: ListView.builder(
+                padding: EdgeInsets.all(16),
+                itemCount: _reservations.length,
+                itemBuilder: (context, index) {
+                  var reservation = _reservations[index];
+                  if (_selectedRoute != 'Tous' && reservation['route'] != _selectedRoute) {
+                    return SizedBox.shrink();
+                  }
+                  if (_selectedStatus != 'Tous' && reservation['status'] != _selectedStatus) {
+                    return SizedBox.shrink();
+                  }
+                  return _buildReservationCard(reservation);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReservationCard(Map<String, dynamic> reservation, {bool isCompact = false}) {
+    Color statusColor = _getStatusColor(reservation['status']);
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[200]!),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      reservation['id'],
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      reservation['user'],
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: statusColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  reservation['status'].toUpperCase(),
+                  style: TextStyle(
+                    color: statusColor,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 8),
+
+          Row(
+            children: [
+              Icon(Icons.route, color: Colors.grey[600], size: 16),
+              SizedBox(width: 4),
+              Text(
+                reservation['route'],
+                style: TextStyle(color: Colors.grey[700], fontSize: 14),
+              ),
+              SizedBox(width: 16),
+              Icon(Icons.schedule, color: Colors.grey[600], size: 16),
+              SizedBox(width: 4),
+              Text(
+                '${reservation['date']} ${reservation['time']}',
+                style: TextStyle(color: Colors.grey[700], fontSize: 14),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 8),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${reservation['price'].toString()} FCFA',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.blue[600],
+                ),
+              ),
+              if (!isCompact)
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () => _showReservationDetails(reservation),
+                      icon: Icon(Icons.visibility, color: Colors.blue[600], size: 20),
+                      tooltip: 'Voir détails',
+                    ),
+                    IconButton(
+                      onPressed: () => _showEditReservationDialog(reservation),
+                      icon: Icon(Icons.edit, color: Colors.green[600], size: 20),
+                      tooltip: 'Modifier',
+                    ),
+                    IconButton(
+                      onPressed: () => _showCancelDialog(reservation),
+                      icon: Icon(Icons.cancel, color: Colors.red[600], size: 20),
+                      tooltip: 'Annuler',
+                    ),
+                    IconButton(
+                      onPressed: () => _showRefundDialog(reservation),
+                      icon: Icon(Icons.refresh, color: Colors.orange[600], size: 20),
+                      tooltip: 'Rembourser',
+                    ),
+                  ],
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTarifs() {
+    return Padding(
+      padding: EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Gestion des Tarifs',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              ElevatedButton.icon(
+                onPressed: () => _showAddTarifDialog(),
+                icon: Icon(Icons.add),
+                label: Text('Nouveau Tarif'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue[600],
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 24),
+
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+              ),
+              itemCount: _tarifs.length,
+              itemBuilder: (context, index) {
+                return _buildTarifCard(_tarifs[index]);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTarifCard(Map<String, dynamic> tarif) {
+    bool isVIP = tarif['category'] == 'VIP';
+
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 3,
+            offset: Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isVIP ? Colors.purple[100] : Colors.blue[100],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  tarif['category'],
+                  style: TextStyle(
+                    color: isVIP ? Colors.purple[600] : Colors.blue[600],
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              PopupMenuButton(
+                icon: Icon(Icons.more_vert, color: Colors.grey[600]),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: ListTile(
+                      leading: Icon(Icons.edit, color: Colors.green[600]),
+                      title: Text('Modifier'),
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    value: 'edit',
+                  ),
+                  PopupMenuItem(
+                    child: ListTile(
+                      leading: Icon(Icons.delete, color: Colors.red[600]),
+                      title: Text('Supprimer'),
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    value: 'delete',
+                  ),
+                ],
+                onSelected: (value) {
+                  if (value == 'edit') {
+                    _showEditTarifDialog(tarif);
+                  } else if (value == 'delete') {
+                    _showDeleteTarifDialog(tarif);
+                  }
+                },
+              ),
+            ],
+          ),
+
+          SizedBox(height: 16),
+
+          Text(
+            tarif['route'],
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          SizedBox(height: 8),
+
+          Text(
+            '${tarif['price'].toString()} FCFA',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: isVIP ? Colors.purple[600] : Colors.blue[600],
+            ),
+          ),
+
+          SizedBox(height: 8),
+
+          Row(
+            children: [
+              Icon(Icons.schedule, color: Colors.grey[600], size: 16),
+              SizedBox(width: 4),
+              Text(
+                'Durée: ${tarif['duration']}',
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              ),
+            ],
+          ),
+
+          Spacer(),
+
+          Text(
+            'Mis à jour: ${tarif['lastUpdate']}',
+            style: TextStyle(color: Colors.grey[500], fontSize: 10),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUsers() {
+    return Padding(
+      padding: EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Gestion des Utilisateurs',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              ElevatedButton.icon(
+                onPressed: () => _showAddUserDialog(),
+                icon: Icon(Icons.add),
+                label: Text('Nouvel Utilisateur'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue[600],
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 24),
+
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: SingleChildScrollView(
+                child: DataTable(
+                  headingRowHeight: 60,
+                  dataRowHeight: 70,
+                  columnSpacing: 20,
+                  headingTextStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[700],
+                  ),
+                  columns: [
+                    DataColumn(label: Text('Utilisateur')),
+                    DataColumn(label: Text('Contact')),
+                    DataColumn(label: Text('Statut')),
+                    DataColumn(label: Text('Voyages')),
+                    DataColumn(label: Text('Dépenses')),
+                    DataColumn(label: Text('Actions')),
+                  ],
+                  rows: _users.map((user) {
+                    bool isActive = user['status'] == 'actif';
+                    return DataRow(
+                      cells: [
+                        DataCell(
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: Colors.blue[600],
+                                child: Text(
+                                  user['name'][0].toUpperCase(),
+                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              SizedBox(width: 12),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    user['name'],
+                                    style: TextStyle(fontWeight: FontWeight.w600),
+                                  ),
+                                  Text(
+                                    user['email'],
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        DataCell(Text(user['phone'])),
+                        DataCell(
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: isActive ? Colors.green[100] : Colors.red[100],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              user['status'].toUpperCase(),
+                              style: TextStyle(
+                                color: isActive ? Colors.green[600] : Colors.red[600],
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          Text(
+                            user['totalTrips'].toString(),
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        DataCell(
+                          Text(
+                            '${user['totalSpent'].toString()} FCFA',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.blue[600],
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                onPressed: () => _showUserDetails(user),
+                                icon: Icon(Icons.visibility, color: Colors.blue[600], size: 18),
+                                tooltip: 'Voir profil',
+                              ),
+                              IconButton(
+                                onPressed: () => _showEditUserDialog(user),
+                                icon: Icon(Icons.edit, color: Colors.green[600], size: 18),
+                                tooltip: 'Modifier',
+                              ),
+                              IconButton(
+                                onPressed: () => _toggleUserStatus(user),
+                                icon: Icon(
+                                  isActive ? Icons.block : Icons.check_circle,
+                                  color: isActive ? Colors.red[600] : Colors.green[600],
+                                  size: 18,
+                                ),
+                                tooltip: isActive ? 'Suspendre' : 'Activer',
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSettings() {
+    return Padding(
+      padding: EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Paramètres du Système',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+
+          SizedBox(height: 24),
+
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 2,
+              childAspectRatio: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              children: [
+                _buildSettingCard(
+                  'Configuration Routes',
+                  'Gérer les destinations et horaires',
+                  Icons.route,
+                  Colors.blue,
+                      () {},
+                ),
+                _buildSettingCard(
+                  'Notifications',
+                  'Paramètres des alertes système',
+                  Icons.notifications,
+                  Colors.orange,
+                      () {},
+                ),
+                _buildSettingCard(
+                  'Paiements',
+                  'Configuration des moyens de paiement',
+                  Icons.payment,
+                  Colors.green,
+                      () {},
+                ),
+                _buildSettingCard(
+                  'Rapports',
+                  'Génération de rapports automatiques',
+                  Icons.analytics,
+                  Colors.purple,
+                      () {},
+                ),
+                _buildSettingCard(
+                  'Sauvegarde',
+                  'Backup et restauration des données',
+                  Icons.backup,
+                  Colors.teal,
+                      () {},
+                ),
+                _buildSettingCard(
+                  'Sécurité',
+                  'Gestion des accès et permissions',
+                  Icons.security,
+                  Colors.red,
+                      () {},
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSettingCard(String title, String description, IconData icon, Color color, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, color: color, size: 24),
+            ),
+            SizedBox(height: 12),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 4),
+            Text(
+              description,
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'confirmé': return Colors.green;
+      case 'en attente': return Colors.orange;
+      case 'annulé': return Colors.red;
+      default: return Colors.grey;
+    }
+  }
+
+  // Dialog methods
+  void _showAddReservationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Nouvelle Réservation'),
+        content: Container(
+          width: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Nom du client',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: 'Route',
+                  border: OutlineInputBorder(),
+                ),
+                items: ['Yaoundé → Douala', 'Douala → Yaoundé'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {},
+              ),
+              SizedBox(height: 16),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Date de voyage',
+                  border: OutlineInputBorder(),
+                  suffixIcon: Icon(Icons.calendar_today),
+                ),
+                onTap: () async {
+                  DateTime? date = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(Duration(days: 365)),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Créer'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showReservationDetails(Map<String, dynamic> reservation) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Détails de la Réservation'),
+        content: Container(
+          width: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildDetailRow('ID', reservation['id']),
+              _buildDetailRow('Client', reservation['user']),
+              _buildDetailRow('Téléphone', reservation['phone']),
+              _buildDetailRow('Route', reservation['route']),
+              _buildDetailRow('Date', reservation['date']),
+              _buildDetailRow('Heure', reservation['time']),
+              _buildDetailRow('Prix', '${reservation['price']} FCFA'),
+              _buildDetailRow('Statut', reservation['status']),
+              _buildDetailRow('Paiement', reservation['payment']),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Fermer'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              '$label:',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+          Expanded(child: Text(value)),
+        ],
+      ),
+    );
+  }
+
+  void _showEditReservationDialog(Map<String, dynamic> reservation) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Modifier la Réservation'),
+        content: Container(
+          width: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Nom du client',
+                  border: OutlineInputBorder(),
+                ),
+                controller: TextEditingController(text: reservation['user']),
+              ),
+              SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: 'Statut',
+                  border: OutlineInputBorder(),
+                ),
+                value: reservation['status'],
+                items: ['confirmé', 'en attente', 'annulé'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {},
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Sauvegarder'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showCancelDialog(Map<String, dynamic> reservation) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirmer l\'Annulation'),
+        content: Text('Êtes-vous sûr de vouloir annuler la réservation ${reservation['id']} ?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Non'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                reservation['status'] = 'annulé';
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: Text('Oui, Annuler'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showRefundDialog([Map<String, dynamic>? reservation]) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Traitement du Remboursement'),
+        content: Container(
+          width: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (reservation != null) ...[
+                Text('Réservation: ${reservation['id']}'),
+                Text('Client: ${reservation['user']}'),
+                Text('Montant: ${reservation['price']} FCFA'),
+                SizedBox(height: 16),
+              ],
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Motif du remboursement',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (reservation != null) {
+                setState(() {
+                  reservation['payment'] = 'remboursé';
+                  reservation['status'] = 'annulé';
+                });
+              }
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+            child: Text('Confirmer Remboursement'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddTarifDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Nouveau Tarif'),
+        content: Container(
+          width: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: 'Route',
+                  border: OutlineInputBorder(),
+                ),
+                items: ['Yaoundé → Douala', 'Douala → Yaoundé'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {},
+              ),
+              SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: 'Catégorie',
+                  border: OutlineInputBorder(),
+                ),
+                items: ['Standard', 'VIP'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {},
+              ),
+              SizedBox(height: 16),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Prix (FCFA)',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Créer'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditTarifDialog(Map<String, dynamic> tarif) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Modifier le Tarif'),
+        content: Container(
+          width: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Route',
+                  border: OutlineInputBorder(),
+                ),
+                controller: TextEditingController(text: tarif['route']),
+                enabled: false,
+              ),
+              SizedBox(height: 16),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Catégorie',
+                  border: OutlineInputBorder(),
+                ),
+                controller: TextEditingController(text: tarif['category']),
+                enabled: false,
+              ),
+              SizedBox(height: 16),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Prix (FCFA)',
+                  border: OutlineInputBorder(),
+                ),
+                controller: TextEditingController(text: tarif['price'].toString()),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Sauvegarder'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteTarifDialog(Map<String, dynamic> tarif) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Supprimer le Tarif'),
+        content: Text('Êtes-vous sûr de vouloir supprimer ce tarif ?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _tarifs.remove(tarif);
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: Text('Supprimer'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddUserDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Nouvel Utilisateur'),
+        content: Container(
+          width: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Nom complet',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 16),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 16),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Téléphone',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Créer'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showUserDetails(Map<String, dynamic> user) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Profil Utilisateur'),
+        content: Container(
+          width: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildDetailRow('Nom', user['name']),
+              _buildDetailRow('Email', user['email']),
+              _buildDetailRow('Téléphone', user['phone']),
+              _buildDetailRow('Statut', user['status']),
+              _buildDetailRow('Inscription', user['joinDate']),
+              _buildDetailRow('Voyages totaux', user['totalTrips'].toString()),
+              _buildDetailRow('Dépenses totales', '${user['totalSpent']} FCFA'),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Fermer'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditUserDialog(Map<String, dynamic> user) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Modifier l\'Utilisateur'),
+        content: Container(
+          width: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Nom complet',
+                  border: OutlineInputBorder(),
+                ),
+                controller: TextEditingController(text: user['name']),
+              ),
+              SizedBox(height: 16),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
+                controller: TextEditingController(text: user['email']),
+              ),
+              SizedBox(height: 16),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Téléphone',
+                  border: OutlineInputBorder(),
+                ),
+                controller: TextEditingController(text: user['phone']),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Sauvegarder'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _toggleUserStatus(Map<String, dynamic> user) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Changer le Statut'),
+        content: Text(
+            user['status'] == 'actif'
+                ? 'Suspendre l\'utilisateur ${user['name']} ?'
+                : 'Activer l\'utilisateur ${user['name']} ?'
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                user['status'] = user['status'] == 'actif' ? 'suspendu' : 'actif';
+              });
+              Navigator.pop(context);
+            },
+            child: Text('Confirmer'),
           ),
         ],
       ),
