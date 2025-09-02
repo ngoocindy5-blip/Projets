@@ -1,22 +1,31 @@
 import 'package:bus_easy/User/Home_Page.dart';
 import 'package:bus_easy/User/Login_page.dart';
+import 'package:bus_easy/screen/User%20screen/landing/landing_user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(GlobalVoyagesApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class GlobalVoyagesApp extends StatelessWidget {
+  const GlobalVoyagesApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'GLOBALE VOYAGES',
       debugShowCheckedModeBanner: false,
-      home: HomePage (),
+      theme: ThemeData(
+        useMaterial3: true,
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF21C17A)),
+        fontFamily: 'Roboto',
+      ),
+      home: const LandingPage(),
     );
   }
 }
+
