@@ -1,13 +1,19 @@
-import 'package:bus_easy/screen/User%20screen/Home/Home_page.dart';
-
-import 'package:bus_easy/screen/User%20screen/landing/landing_user_screen.dart';
+import 'package:bus_easy/screen/admin/login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:bus_easy/screen/User screen/landing/landing_user_screen.dart';
+import 'firebase_options.dart';
 
-void main() async {
+
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(GlobalVoyagesApp());
+  await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform
+  );
+
+  runApp(const GlobalVoyagesApp());
 }
 
 class GlobalVoyagesApp extends StatelessWidget {
@@ -24,8 +30,8 @@ class GlobalVoyagesApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF21C17A)),
         fontFamily: 'Roboto',
       ),
-      home: LandingPage(),
+
+      home: kIsWeb ? const AdminLoginPage() : const LandingPage(),
     );
   }
 }
-
