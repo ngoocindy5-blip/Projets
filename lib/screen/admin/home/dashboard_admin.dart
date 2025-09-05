@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../gestion_user/user_crud.dart';
 import 'theme.dart';
 import 'navigation.dart';
 
@@ -345,17 +346,19 @@ class _QuickActions extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(color: kSurface, borderRadius: BorderRadius.circular(18), boxShadow: [BoxShadow(color: kCardShadow, blurRadius: 18)]),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
-        Text('Actions Rapides', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: kTextDark)),
-        SizedBox(height: 16),
-        _ActionBtn(text: 'Ajouter Bus', icon: Icons.add_circle_rounded, color: kAccentBlue),
-        SizedBox(height: 12),
-        _ActionBtn(text: 'Nouvelle Agence', icon: Icons.business_center_rounded, color: kSuccessGreen),
-        SizedBox(height: 12),
-        _ActionBtn(text: 'Voir Rapports', icon: Icons.analytics_rounded, color: kWarningOrange),
-        SizedBox(height: 12),
-        _ActionBtn(text: 'Paramètres', icon: Icons.settings_rounded, color: kTextLight),
-      ]),
+      child: SingleChildScrollView(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+          Text('Actions Rapides', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: kTextDark)),
+          SizedBox(height: 16),
+          _ActionBtn(text: 'Ajouter Bus', icon: Icons.add_circle_rounded, color: kAccentBlue),
+          SizedBox(height: 12),
+          _ActionBtn(text: 'Nouvelle Agence', icon: Icons.business_center_rounded, color: kSuccessGreen),
+          SizedBox(height: 12),
+          _ActionBtn(text: 'Voir Rapports', icon: Icons.analytics_rounded, color: kWarningOrange),
+          SizedBox(height: 12),
+          _ActionBtn(text: 'Paramètres', icon: Icons.settings_rounded, color: kTextLight),
+        ]),
+      ),
     );
   }
 }
@@ -399,7 +402,10 @@ class UsersView extends StatelessWidget {
     final query = search.trim().toLowerCase();
 
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: FirebaseFirestore.instance.collection('users').snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .orderBy('createdAt', descending: true)
+          .snapshots(),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -414,27 +420,29 @@ class UsersView extends StatelessWidget {
         final docs = snap.data?.docs ?? [];
 
         // Map -> rows (Nom, Email, Rôle, Statut)
-        final allRows = docs.map<List<String>>((d) {
+        final all = <List<String>>[];
+        final mappedDocs = <QueryDocumentSnapshot<Map<String, dynamic>>>[];
+
+        for (final d in docs) {
           final m = d.data();
           final name = (m['name'] ?? '').toString();
           final email = (m['email'] ?? '').toString();
           final role = (m['role'] ?? m['Role'] ?? 'user').toString();
           final status = (m['status'] ?? 'actif').toString();
-          return [name, email, role, status];
-        }).toList();
+          final row = [name, email, role, status];
 
-        // Tri par createdAt si présent
-        allRows.sort((a, b) => 0); // no-op (données déjà prêtes)
+          // filtre client
+          if (query.isEmpty ||
+              row.any((c) => c.toLowerCase().contains(query))) {
+            all.add(row);
+            mappedDocs.add(d);
+          }
+        }
 
-        // Filtre recherche
-        final rows = query.isEmpty
-            ? allRows
-            : allRows.where((r) => r.any((c) => c.toLowerCase().contains(query))).toList();
-
-        if (rows.isEmpty) {
+        if (all.isEmpty) {
           return const _EmptyState(
             title: 'Aucun utilisateur',
-            subtitle: 'Essayez un autre terme ou ajoutez un utilisateur.',
+            subtitle: 'Essayez un autre terme ou créez un compte.',
             icon: Icons.people_outline,
           );
         }
@@ -445,7 +453,48 @@ class UsersView extends StatelessWidget {
           icon: Icons.people_rounded,
           color: kAccentBlue,
           headers: const ['Nom', 'Email', 'Rôle', 'Statut', 'Actions'],
-          rows: rows,
+          rows: all,
+          onAdd: () => showCreateChoiceDialog(context), // <— menu Utilisateur/Agence
+          onRowAction: (action, index) async {
+            final d = mappedDocs[index];
+            final role = (d['role'] ?? 'user').toString().toLowerCase();
+
+            if (action == 'edit') {
+              if (role == 'agence') {
+                await showAgencyFormDialog(context, doc: d);
+              } else {
+                await showUserFormDialog(context, doc: d);
+              }
+            } else if (action == 'delete') {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: const Text('Supprimer'),
+                  content: Text('Confirmer la suppression de "${d['name'] ?? d.id}" ?'),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Annuler')),
+                    ElevatedButton(onPressed: () => Navigator.pop(context, true), child: const Text('Supprimer')),
+                  ],
+                ),
+              );
+              if (confirm == true) {
+                try {
+                  await deleteUserDoc(d.id);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Utilisateur supprimé')),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Erreur: $e')),
+                    );
+                  }
+                }
+              }
+            }
+          },
         );
       },
     );

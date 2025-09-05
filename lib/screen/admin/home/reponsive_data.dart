@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'theme.dart';
 
 /// Table responsive (desktop-first).
-/// Desktop/tablet : header fixe + ListView (pas de scroll horizontal).
+/// Desktop/tablet : header fixe + ListView.
 /// Mobile : cartes key-value + menu d’actions.
 class AdminResponsiveData extends StatelessWidget {
   final String title, subtitle;
@@ -11,6 +11,14 @@ class AdminResponsiveData extends StatelessWidget {
   final List<String> headers;      // inclure "Actions" si besoin
   final List<List<String>> rows;   // chaque ligne SANS la colonne Actions
   final bool showAdd;
+
+  /// NOUVEAU: callback bouton "Ajouter"
+  final VoidCallback? onAdd;
+
+  /// NOUVEAU: actions par ligne (edit/delete)
+  ///  - action: 'edit' | 'delete'
+  ///  - index: index de la ligne (dans `rows`)
+  final void Function(String action, int index)? onRowAction;
 
   const AdminResponsiveData({
     super.key,
@@ -21,6 +29,8 @@ class AdminResponsiveData extends StatelessWidget {
     required this.headers,
     required this.rows,
     this.showAdd = true,
+    this.onAdd,
+    this.onRowAction,
   });
 
   bool get _hasActions =>
@@ -63,7 +73,7 @@ class AdminResponsiveData extends StatelessWidget {
               ),
               if (showAdd && _hasActions)
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: onAdd, // <— NOUVEAU
                   icon: const Icon(Icons.add_rounded, size: 18),
                   label: const Text('Ajouter'),
                   style: ElevatedButton.styleFrom(
@@ -87,7 +97,7 @@ class AdminResponsiveData extends StatelessWidget {
                 boxShadow: [BoxShadow(color: kCardShadow, blurRadius: 18)],
               ),
               child: isMobile
-                  ? _CardList(headers: dataHeaders, rows: rows, hasActions: _hasActions)
+                  ? _CardList(headers: dataHeaders, rows: rows, hasActions: _hasActions, onRowAction: onRowAction)
                   : Column(
                 children: [
                   // Header
@@ -135,7 +145,7 @@ class AdminResponsiveData extends StatelessWidget {
                               if (_hasActions)
                                 PopupMenuButton<String>(
                                   icon: const Icon(Icons.more_vert_rounded, color: kTextLight, size: 18),
-                                  onSelected: (v) {},
+                                  onSelected: (v) => onRowAction?.call(v, i), // <—
                                   itemBuilder: (context) => [
                                     _pm('edit', 'Modifier', Icons.edit_rounded),
                                     _pm('delete', 'Supprimer', Icons.delete_rounded, color: kErrorRed),
@@ -180,8 +190,9 @@ class _CardList extends StatelessWidget {
   final List<String> headers;
   final List<List<String>> rows;
   final bool hasActions;
+  final void Function(String action, int index)? onRowAction;
 
-  const _CardList({required this.headers, required this.rows, required this.hasActions});
+  const _CardList({required this.headers, required this.rows, required this.hasActions, required this.onRowAction});
 
   @override
   Widget build(BuildContext context) {
@@ -227,6 +238,7 @@ class _CardList extends StatelessWidget {
                   child: PopupMenuButton<String>(
                     icon: const Icon(Icons.more_vert_rounded,
                         color: kTextLight, size: 18),
+                    onSelected: (v) => onRowAction?.call(v, i), // <—
                     itemBuilder: (context) => const [
                       PopupMenuItem(
                         value: 'edit',
