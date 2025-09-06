@@ -3,8 +3,9 @@ import 'package:bus_easy/screen/admin/home/top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import '../gestion_user/user_crud.dart';
+import '../gestion_agence/agence_view.dart';
+import '../gestion_bus/bus_view.dart';
+import '../gestion_user/user_view.dart';
 import 'theme.dart';
 import 'navigation.dart';
 
@@ -184,8 +185,8 @@ class _PageSwitcher extends StatelessWidget {
     switch (index) {
       case 0: return const DashboardHomeView();
       case 1: return UsersView(search: search);
-      case 2: return const AgenciesView();
-      case 3: return const BusesView();
+      case 2: return const AgencyView();
+      case 3: return const BusView();
       case 4: return const TransactionsView();
       case 5: return const ReservationsView();
       case 6: return const ReportsView();
@@ -195,7 +196,7 @@ class _PageSwitcher extends StatelessWidget {
   }
 }
 
-/* =================== Dashboard (stats + activité) =================== */
+
 class DashboardHomeView extends StatelessWidget {
   const DashboardHomeView({super.key});
 
@@ -390,116 +391,6 @@ class _ActionBtn extends StatelessWidget {
   }
 }
 
-/* =================== VUES CRUD =================== */
-
-/// ---- Utilisateurs (Firestore temps réel + recherche) ----
-class UsersView extends StatelessWidget {
-  final String search;
-  const UsersView({super.key, this.search = ''});
-
-  @override
-  Widget build(BuildContext context) {
-    final query = search.trim().toLowerCase();
-
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: FirebaseFirestore.instance
-          .collection('users')
-          .orderBy('createdAt', descending: true)
-          .snapshots(),
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snap.hasError) {
-          return Center(
-            child: Text('Erreur de chargement: ${snap.error}',
-                style: const TextStyle(color: kErrorRed)),
-          );
-        }
-
-        final docs = snap.data?.docs ?? [];
-
-        // Map -> rows (Nom, Email, Rôle, Statut)
-        final all = <List<String>>[];
-        final mappedDocs = <QueryDocumentSnapshot<Map<String, dynamic>>>[];
-
-        for (final d in docs) {
-          final m = d.data();
-          final name = (m['name'] ?? '').toString();
-          final email = (m['email'] ?? '').toString();
-          final role = (m['role'] ?? m['Role'] ?? 'user').toString();
-          final status = (m['status'] ?? 'actif').toString();
-          final row = [name, email, role, status];
-
-          // filtre client
-          if (query.isEmpty ||
-              row.any((c) => c.toLowerCase().contains(query))) {
-            all.add(row);
-            mappedDocs.add(d);
-          }
-        }
-
-        if (all.isEmpty) {
-          return const _EmptyState(
-            title: 'Aucun utilisateur',
-            subtitle: 'Essayez un autre terme ou créez un compte.',
-            icon: Icons.people_outline,
-          );
-        }
-
-        return AdminResponsiveData(
-          title: 'Gestion des Utilisateurs',
-          subtitle: 'Gérez tous les utilisateurs de la plateforme',
-          icon: Icons.people_rounded,
-          color: kAccentBlue,
-          headers: const ['Nom', 'Email', 'Rôle', 'Statut', 'Actions'],
-          rows: all,
-          onAdd: () => showCreateChoiceDialog(context), // <— menu Utilisateur/Agence
-          onRowAction: (action, index) async {
-            final d = mappedDocs[index];
-            final role = (d['role'] ?? 'user').toString().toLowerCase();
-
-            if (action == 'edit') {
-              if (role == 'agence') {
-                await showAgencyFormDialog(context, doc: d);
-              } else {
-                await showUserFormDialog(context, doc: d);
-              }
-            } else if (action == 'delete') {
-              final confirm = await showDialog<bool>(
-                context: context,
-                builder: (_) => AlertDialog(
-                  title: const Text('Supprimer'),
-                  content: Text('Confirmer la suppression de "${d['name'] ?? d.id}" ?'),
-                  actions: [
-                    TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Annuler')),
-                    ElevatedButton(onPressed: () => Navigator.pop(context, true), child: const Text('Supprimer')),
-                  ],
-                ),
-              );
-              if (confirm == true) {
-                try {
-                  await deleteUserDoc(d.id);
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Utilisateur supprimé')),
-                    );
-                  }
-                } catch (e) {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Erreur: $e')),
-                    );
-                  }
-                }
-              }
-            }
-          },
-        );
-      },
-    );
-  }
-}
 
 class _EmptyState extends StatelessWidget {
   final String title, subtitle;
@@ -524,44 +415,6 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-/// ---- Agences / Bus / Transactions / Réservations / Signalements (mock pour l’instant) ----
-class AgenciesView extends StatelessWidget {
-  const AgenciesView({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return const AdminResponsiveData(
-      title: 'Gestion des Agences',
-      subtitle: 'Administrez toutes les agences du réseau',
-      icon: Icons.business_rounded,
-      color: kSuccessGreen,
-      headers: ['Nom', 'Ville', 'Bus', 'Revenus', 'Actions'],
-      rows: [
-        ['Agence Nord', 'Paris', '15', '€25,400'],
-        ['Agence Sud', 'Lyon', '12', '€18,200'],
-        ['Agence Ouest', 'Nantes', '8', '€12,100'],
-      ],
-    );
-  }
-}
-
-class BusesView extends StatelessWidget {
-  const BusesView({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return const AdminResponsiveData(
-      title: 'Gestion des Bus',
-      subtitle: 'Suivez et gérez votre flotte de véhicules',
-      icon: Icons.directions_bus_rounded,
-      color: kWarningOrange,
-      headers: ['Immatriculation', 'Modèle', 'Agence', 'Statut', 'Actions'],
-      rows: [
-        ['AB-123-CD', 'Mercedes Sprinter', 'Agence Nord', 'Actif'],
-        ['EF-456-GH', 'Iveco Daily', 'Agence Sud', 'Maintenance'],
-        ['IJ-789-KL', 'Ford Transit', 'Agence Ouest', 'Actif'],
-      ],
-    );
-  }
-}
 
 class TransactionsView extends StatelessWidget {
   const TransactionsView({super.key});
