@@ -190,7 +190,7 @@ class _WelcomeCard extends StatelessWidget {
             child: ElevatedButton(
               onPressed: onPay,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1666FF),
+                backgroundColor: const Color(0xDA16B5FF),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
                 ),

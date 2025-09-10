@@ -6,81 +6,229 @@ class ReservationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100], // fond clair, cohérent avec ton thème
+      backgroundColor: Colors.white,
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(20),
+        child: Column(
           children: [
-            // TopBar minimaliste (optionnel)
-            Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF1666FF), Color(0xFF4285FF)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF1666FF).withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(Icons.star_border_rounded, color: Colors.white),
-                ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(.05),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(Icons.more_vert_rounded, color: Color(0xFF6B7AA8), size: 22),
-                ),
-              ],
-            ),
-            const SizedBox(height: 30),
-
-            // Zone principale vide
+            // HEADER
             Container(
-              height: 400,
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(.08),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
+                color: Colors.blue[700],
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Global Voyage",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    "Où souhaitez-vous voyager ?",
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.9),
+                      fontSize: 16,
+                    ),
                   ),
                 ],
               ),
-              child: const Center(
-                child: Text(
-                  "Page blanche",
-                  style: TextStyle(
-                    color: Color(0xFF9AA6BF),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+            ),
+
+            const SizedBox(height: 15),
+
+            // FORMULAIRE
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  // Champs départ / arrivée
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.blue[50],
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: const [
+                            Icon(Icons.location_on, color: Colors.blue),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                "Yaoundé (YDE)",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Divider(),
+                        Row(
+                          children: const [
+                            Icon(Icons.flag, color: Colors.blue),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                "Douala (DLA)",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+
+                  const SizedBox(height: 12),
+
+                  // Date du voyage
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.blue[50],
+                    ),
+                    child: Row(
+                      children: const [
+                        Icon(Icons.calendar_today, color: Colors.blue),
+                        SizedBox(width: 10),
+                        Text("12 Décembre 2024",
+                            style: TextStyle(fontSize: 16)),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // Passagers + Classe
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.blue[50],
+                          ),
+                          child: Row(
+                            children: const [
+                              Icon(Icons.people, color: Colors.blue),
+                              SizedBox(width: 10),
+                              Text("2 Adultes"),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.blue[50],
+                          ),
+                          child: Row(
+                            children: const [
+                              Icon(Icons.chair, color: Colors.blue),
+                              SizedBox(width: 10),
+                              Text("VIP"),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Bouton recherche
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      "Rechercher un Ticket",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Résultats
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                children: [
+                  const Text(
+                    "Voyages Disponibles",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  // Exemple Bus 1
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: ListTile(
+                      leading: const Icon(Icons.directions_bus,
+                          color: Colors.blue, size: 40),
+                      title: const Text("Global Voyage - VIP"),
+                      subtitle: const Text("Yaoundé → Douala\n6h30 - 12h30"),
+                      trailing: const Icon(Icons.arrow_forward_ios,
+                          color: Colors.blue),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  // Exemple Bus 2
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: ListTile(
+                      leading: const Icon(Icons.directions_bus,
+                          color: Colors.blue, size: 40),
+                      title: const Text("Global Voyage - Classe Éco"),
+                      subtitle: const Text("Yaoundé → Douala\n7h00 - 13h00"),
+                      trailing: const Icon(Icons.arrow_forward_ios,
+                          color: Colors.blue),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
         ),
+      ),
+
+      // Navigation bas de page
+      bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home), label: "Accueil"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.confirmation_number), label: "Tickets"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person), label: "Profil"),
+        ],
       ),
     );
   }
