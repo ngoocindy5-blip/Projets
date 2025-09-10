@@ -34,7 +34,7 @@ class _AdminDashboardState extends State<AdminDashboard>
 
   final List<String> menuItems = const [
     'Dashboard', 'Utilisateurs', 'Agences', 'Bus',
-    'Transactions', 'Réservations', 'Signalements', 'Paramètres'
+    'Transactions', 'Réservations', 'Signalements','Consulter IA','Paramètres'
   ];
   final List<IconData> menuIcons = const [
     Icons.dashboard_rounded, Icons.people_rounded, Icons.business_rounded,
@@ -218,7 +218,7 @@ class DashboardHomeView extends StatelessWidget {
               SizedBox(width: 16, height: 16),
               Expanded(child: _StatCard(title: 'Bus', value: '156', icon: Icons.directions_bus_rounded, color: kWarningOrange, trend: '+3%', hint: 'flotte active')),
               SizedBox(width: 16, height: 16),
-              Expanded(child: _StatCard(title: 'Revenus', value: '€125,300', icon: Icons.trending_up_rounded, color: kPurpleAccent, trend: '+18%', hint: 'ce mois-ci')),
+              Expanded(child: _StatCard(title: 'Revenus', value: '125,300 FCFA', icon: Icons.trending_up_rounded, color: kPurpleAccent, trend: '+18%', hint: 'ce mois-ci')),
             ],
           ),
           const SizedBox(height: 24),
@@ -292,9 +292,9 @@ class _RecentActivity extends StatelessWidget {
         Expanded(
           child: ListView(
             children: const [
-              _ActivityItem(title: 'Nouvelle réservation', subtitle: 'Bus Paris-Lyon', time: '5 min', icon: Icons.book_online_rounded, color: kSuccessGreen),
+              _ActivityItem(title: 'Nouvelle réservation', subtitle: 'Bus YAOUNDE-DOUALA', time: '5 min', icon: Icons.book_online_rounded, color: kSuccessGreen),
               _ActivityItem(title: 'Bus assigné', subtitle: 'Agence Nord', time: '15 min', icon: Icons.directions_bus_rounded, color: kAccentBlue),
-              _ActivityItem(title: 'Paiement reçu', subtitle: '€45.50', time: '32 min', icon: Icons.payment_rounded, color: kPurpleAccent),
+              _ActivityItem(title: 'Paiement reçu', subtitle: '6000', time: '32 min', icon: Icons.payment_rounded, color: kPurpleAccent),
               _ActivityItem(title: 'Signalement panne', subtitle: 'Bus #156', time: '1h', icon: Icons.warning_rounded, color: kWarningOrange),
             ],
           ),
@@ -427,9 +427,9 @@ class TransactionsView extends StatelessWidget {
       color: kPurpleAccent,
       headers: ['ID', 'Montant', 'Client', 'Date', 'Statut', 'Actions'],
       rows: [
-        ['#1234', '€45.50', 'Jean Martin', '05/09/2025', 'Validé'],
-        ['#1235', '€32.00', 'Marie Durand', '05/09/2025', 'En attente'],
-        ['#1236', '€28.75', 'Paul Leroux', '04/09/2025', 'Validé'],
+        ['#1234', '6000', 'Mbatoutchou Arthur', '05/09/2025', 'Validé'],
+        ['#1235', '5000', 'Atangana felix', '05/09/2025', 'En attente'],
+        ['#1236', '2500', 'Mimboe Stephane', '04/09/2025', 'Validé'],
       ],
     );
   }
@@ -446,9 +446,9 @@ class ReservationsView extends StatelessWidget {
       color: kAccentBlue,
       headers: ['Réf', 'Client', 'Trajet', 'Date', 'Statut', 'Actions'],
       rows: [
-        ['R001', 'Jean Martin', 'Paris-Lyon', '10/09/2025', 'Confirmée'],
-        ['R002', 'Marie Durand', 'Lyon-Marseille', '12/09/2025', 'En attente'],
-        ['R003', 'Paul Leroux', 'Nantes-Bordeaux', '15/09/2025', 'Annulée'],
+        ['R001', 'Mbatoutchou Arthur', 'Yaounde-Douala', '10/09/2025', 'Confirmée'],
+        ['R002', 'Atangana felix', 'Douala-Yaounde', '12/09/2025', 'En attente'],
+        ['R003', 'Mimboe Stephane', 'Yaounde-mbalmayo', '15/09/2025', 'Annulée'],
       ],
     );
   }
