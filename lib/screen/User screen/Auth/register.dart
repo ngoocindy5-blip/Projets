@@ -99,6 +99,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         'email': email,
         'phone': phone,
         'role': 'client',
+        'status': 'actif',
         'createdAt': now,
         'updatedAt': now,
       });
