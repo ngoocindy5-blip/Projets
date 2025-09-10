@@ -1,4 +1,5 @@
 import 'package:bus_easy/screen/User%20screen/Auth/login.dart';
+import 'package:bus_easy/screen/admin/home/dashboard_admin.dart';
 import 'package:bus_easy/screen/admin/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -32,7 +33,7 @@ class GlobalVoyagesApp extends StatelessWidget {
         fontFamily: 'Roboto',
       ),
 
-      home: kIsWeb ? const LandingPage() : const LoginScreen(),
+      home: kIsWeb ? const AdminDashboard() : const LandingPage(),
     );
   }
 }

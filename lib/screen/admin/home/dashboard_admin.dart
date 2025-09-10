@@ -1,3 +1,4 @@
+import 'package:bus_easy/screen/admin/Consulter%20IA/consulter_IA.dart';
 import 'package:bus_easy/screen/admin/home/reponsive_data.dart';
 import 'package:bus_easy/screen/admin/home/top_bar.dart';
 import 'package:flutter/material.dart';
@@ -34,12 +35,12 @@ class _AdminDashboardState extends State<AdminDashboard>
 
   final List<String> menuItems = const [
     'Dashboard', 'Utilisateurs', 'Agences', 'Bus',
-    'Transactions', 'Réservations', 'Signalements','Consulter IA','Paramètres'
+    'Transactions', 'Réservations', 'Signalements','Paramètres','Consulter IA'
   ];
   final List<IconData> menuIcons = const [
     Icons.dashboard_rounded, Icons.people_rounded, Icons.business_rounded,
     Icons.directions_bus_rounded, Icons.payment_rounded, Icons.book_online_rounded,
-    Icons.report_problem_rounded, Icons.settings_rounded
+    Icons.report_problem_rounded, Icons.settings_rounded,Icons.smart_toy
   ];
 
   @override
@@ -191,10 +192,12 @@ class _PageSwitcher extends StatelessWidget {
       case 5: return const ReservationsView();
       case 6: return const ReportsView();
       case 7: return const SettingsView();
+      case 8: return const ConsulterIAView(); // 🔥 nouvelle page IA
       default: return const DashboardHomeView();
     }
   }
 }
+
 
 
 class DashboardHomeView extends StatelessWidget {

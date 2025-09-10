@@ -225,8 +225,6 @@ class ReservationPage extends StatelessWidget {
           BottomNavigationBarItem(
               icon: Icon(Icons.home), label: "Accueil"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.confirmation_number), label: "Tickets"),
-          BottomNavigationBarItem(
               icon: Icon(Icons.person), label: "Profil"),
         ],
       ),
