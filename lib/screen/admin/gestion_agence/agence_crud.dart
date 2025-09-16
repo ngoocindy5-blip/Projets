@@ -70,7 +70,7 @@ String? _vPassword(String? v) {
 
 /// ========================= CRUD AGENCE ===============================
 
-/// Création d’un compte **Firebase Auth** pour l’agence via une app secondaire,
+/// Création d’un compte **Firebase auth** pour l’agence via une app secondaire,
 /// puis création du document Firestore `users/{uid}` avec role: "agence".
 Future<String> createAgencyAccount({
   required String name,
@@ -117,7 +117,7 @@ Future<String> createAgencyAccount({
     return uid;
   } on FirebaseAuthException catch (e) {
     if (e.code == 'email-already-in-use') {
-      throw 'Email déjà utilisé dans Firebase Auth.';
+      throw 'Email déjà utilisé dans Firebase auth.';
     }
     throw e.message ?? e.code;
   } finally {
@@ -158,7 +158,7 @@ Future<void> sendAgencyPasswordReset(String email) async {
 }
 
 /// Suppression du **document Firestore** (soft conseil : préférez status=inactif).
-/// ⚠️ Depuis le client on ne peut PAS supprimer l’utilisateur Auth d’un autre compte.
+/// ⚠️ Depuis le client on ne peut PAS supprimer l’utilisateur auth d’un autre compte.
 Future<void> deleteAgencyDoc(String uid) async {
   await _usersCol.doc(uid).delete();
 }
@@ -191,7 +191,7 @@ Future<void> showAgencyFormDialog(
       title: isEdit ? 'Modifier une agence' : 'Nouvelle agence',
       subtitle: isEdit
           ? 'Mettre à jour les informations de l’agence'
-          : 'Créer le compte agence (Auth + Firestore)',
+          : 'Créer le compte agence (auth + Firestore)',
       child: Form(
         key: formKey,
         child: ValueListenableBuilder<bool>(

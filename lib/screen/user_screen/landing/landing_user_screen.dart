@@ -1,5 +1,6 @@
-import 'package:bus_easy/screen/User%20screen/Auth/login.dart';
 import 'package:flutter/material.dart';
+
+import '../auth/login.dart';
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});

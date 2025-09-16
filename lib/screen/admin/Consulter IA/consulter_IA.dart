@@ -71,10 +71,6 @@ class _ConsulterIAViewState extends State<ConsulterIAView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Consulter l’IA"),
-        backgroundColor: Colors.indigo,
-      ),
       body: Column(
         children: [
           Expanded(
