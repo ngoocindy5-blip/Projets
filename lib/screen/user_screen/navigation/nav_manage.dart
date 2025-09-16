@@ -1,8 +1,9 @@
-import 'package:bus_easy/screen/User%20screen/Home/Home_page.dart';
-import 'package:bus_easy/screen/User%20screen/Itineraire/itineraire.dart';
-import 'package:bus_easy/screen/User%20screen/Profile/profile.dart';
-import 'package:bus_easy/screen/User%20screen/Reservations/reservation.dart';
 import 'package:flutter/material.dart';
+
+import '../Itineraire/itineraire.dart';
+import '../home/Home_page.dart';
+import '../profile/profile.dart';
+import '../reservations/reservation.dart';
 
 class NavManage extends StatefulWidget {
   const NavManage({super.key});
@@ -76,7 +77,7 @@ class _NavManageState extends State<NavManage> {
                 onTap: () => _changePage(1),
                 child: _BottomItem(
                   icon: Icons.credit_card_rounded,
-                  label: 'Reservations',
+                  label: 'reservations',
                   selected: _currentIndex == 1,
                 ),
               ),

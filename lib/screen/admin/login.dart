@@ -112,7 +112,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> with TickerProviderStat
 
     setState(() => _loading = true);
     try {
-      // 1) Auth Firebase
+      // 1) auth Firebase
       final cred = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: pass);
       final user = cred.user!;

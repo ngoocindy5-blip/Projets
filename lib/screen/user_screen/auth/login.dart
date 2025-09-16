@@ -1,8 +1,9 @@
-import 'package:bus_easy/screen/User%20screen/Home/Home_page.dart';
-import 'package:bus_easy/screen/User%20screen/navigation/nav_manage.dart';
+import 'package:bus_easy/screen/user_screen/auth/register.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bus_easy/screen/User screen/Auth/register.dart';
+
+import '../navigation/nav_manage.dart';
+
 // TODO : importe ta page d'accueil
 
 class LoginScreen extends StatefulWidget {

@@ -77,7 +77,7 @@ class AgencyView extends StatelessWidget {
                   title: const Text('Action sur l’agence'),
                   content: const Text(
                     'Souhaitez-vous désactiver l’agence (statut: inactif) ou supprimer le document Firestore ?\n'
-                        '⚠️ La suppression ne retire pas le compte Auth (limitation côté client).',
+                        '⚠️ La suppression ne retire pas le compte auth (limitation côté client).',
                   ),
                   actions: [
                     TextButton(onPressed: () => Navigator.pop(context, 'cancel'), child: const Text('Annuler')),

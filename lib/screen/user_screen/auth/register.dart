@@ -1,8 +1,8 @@
-import 'package:bus_easy/screen/User%20screen/Home/Home_page.dart';
-import 'package:bus_easy/screen/User%20screen/navigation/nav_manage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../navigation/nav_manage.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});

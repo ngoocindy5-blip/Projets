@@ -12,7 +12,7 @@ final _usersCol = FirebaseFirestore.instance.collection('users');
 FirebaseApp? _secondaryApp;
 FirebaseAuth? _secondaryAuth;
 
-/// Auth secondaire pour créer d'autres comptes sans déconnecter l'admin
+/// auth secondaire pour créer d'autres comptes sans déconnecter l'admin
 Future<FirebaseAuth> _getSecondaryAuth() async {
   if (_secondaryAuth != null) return _secondaryAuth!;
   final defaultApp = Firebase.app();
@@ -49,7 +49,7 @@ Future<String> _uniqueAgencyCode() async {
   return 'AG-${DateTime.now().millisecondsSinceEpoch}';
 }
 
-/// --- Auth + Firestore ---
+/// --- auth + Firestore ---
 
 Future<String> createAuthAccount({
   required String email,
@@ -209,7 +209,7 @@ Future<void> showUserFormDialog(
       title: isEdit ? 'Modifier l’utilisateur' : 'Nouvel utilisateur',
       subtitle: isEdit
           ? 'Mettez à jour les informations du compte'
-          : 'Créer un compte Auth + Firestore',
+          : 'Créer un compte auth + Firestore',
       child: Form(
         key: formKey,
         child: Column(
@@ -222,7 +222,7 @@ Future<void> showUserFormDialog(
               keyboard: TextInputType.emailAddress,
               validator: _vEmail,
               readOnly: isEdit,
-              helper: isEdit ? 'Pour changer l’email Auth, passez par l’utilisateur.' : null,
+              helper: isEdit ? 'Pour changer l’email auth, passez par l’utilisateur.' : null,
             ),
             const SizedBox(height: 10),
             _TF(controller: phone, label: 'Téléphone', keyboard: TextInputType.phone, validator: _vReq),
@@ -326,7 +326,7 @@ Future<void> showAgencyFormDialog(
       title: isEdit ? 'Modifier l’agence' : 'Nouvelle agence',
       subtitle: isEdit
           ? 'Mettez à jour les informations de l’agence'
-          : 'Créer un compte agence (Auth + Firestore)',
+          : 'Créer un compte agence (auth + Firestore)',
       child: Form(
         key: formKey,
         child: Column(
@@ -457,7 +457,7 @@ Future<void> showDeleteUserDialog(
                 if (context.mounted) {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Document supprimé (Auth NON supprimé)')),
+                    const SnackBar(content: Text('Document supprimé (auth NON supprimé)')),
                   );
                 }
               } catch (e) {
@@ -469,7 +469,7 @@ Future<void> showDeleteUserDialog(
           ),
           const SizedBox(height: 8),
           const Text(
-            'Note: côté client, on ne peut pas supprimer un autre compte Auth.\n'
+            'Note: côté client, on ne peut pas supprimer un autre compte auth.\n'
                 'La désactivation via Firestore est la meilleure approche.',
             textAlign: TextAlign.center,
             style: TextStyle(color: kTextLight, fontSize: 12),

@@ -1,10 +1,10 @@
-import 'package:bus_easy/screen/User%20screen/Auth/login.dart';
 import 'package:bus_easy/screen/admin/home/dashboard_admin.dart';
 import 'package:bus_easy/screen/admin/login.dart';
+import 'package:bus_easy/screen/user_screen/auth/login.dart';
+import 'package:bus_easy/screen/user_screen/landing/landing_user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_core/firebase_core.dart';
-import 'package:bus_easy/screen/User screen/landing/landing_user_screen.dart';
 import 'firebase_options.dart';
 
 
@@ -33,7 +33,7 @@ class GlobalVoyagesApp extends StatelessWidget {
         fontFamily: 'Roboto',
       ),
 
-      home: kIsWeb ? const LandingPage() : const LoginScreen(),
+      home: kIsWeb ? const AdminLoginPage() : const LandingPage(),
     );
   }
 }
