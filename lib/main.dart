@@ -33,7 +33,7 @@ class GlobalVoyagesApp extends StatelessWidget {
         fontFamily: 'Roboto',
       ),
 
-      home: kIsWeb ? const AdminDashboard() : const LandingPage(),
+      home: kIsWeb ? const LandingPage() : const LoginScreen(),
     );
   }
 }

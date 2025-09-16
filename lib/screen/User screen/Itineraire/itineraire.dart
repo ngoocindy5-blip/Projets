@@ -1,13 +1,57 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-class ItinerairePage extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+class ItinerairePage extends StatefulWidget {
   const ItinerairePage({super.key});
+
+  @override
+  State<ItinerairePage> createState() => _ItinerairePageState();
+}
+
+class _ItinerairePageState extends State<ItinerairePage> {
+  final Completer<GoogleMapController> _controller =
+  Completer<GoogleMapController>();
+
+  @override
+  void initState() {
+    super.initState();
+    _PermisionAsk();
+  }
+
+  Future<void> _PermisionAsk() async{
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+
+        return;
+      }
+    }
+  }
+
+  static const CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(4.04827, 9.70428),
+    zoom: 14.4746,
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100], // fond clair, cohérent avec ton thème
-      body: SafeArea(
+      body:GoogleMap(
+        mapType: MapType.hybrid,
+        initialCameraPosition: _kGooglePlex,
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+        },
+      ),
+
+      /*
+      SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
@@ -82,6 +126,8 @@ class ItinerairePage extends StatelessWidget {
           ],
         ),
       ),
+
+       */
     );
   }
 }

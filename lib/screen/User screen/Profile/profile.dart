@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../auth/login.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -12,10 +13,23 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _darkMode = false;
   final user = FirebaseAuth.instance.currentUser; // Utilisateur connecté
 
-  void _signOut() async {
+  Future<void> _signOut() async {
     await FirebaseAuth.instance.signOut();
-    // Naviguer vers la page d’authentification ou d’accueil
-    Navigator.of(context).pushReplacementNamed('/auth');
+
+    // ✅ Message de confirmation
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Déconnexion réussie"),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+
+    // ✅ Redirection vers LoginScreen en supprimant tout l'historique
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+          (route) => false,
+    );
   }
 
   @override
@@ -54,7 +68,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     child: Center(
                       child: Text(
-                        displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U',
+                        displayName.isNotEmpty
+                            ? displayName[0].toUpperCase()
+                            : 'U',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 36,
@@ -88,7 +104,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
             // Carte de paramètres (mode sombre)
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
@@ -105,7 +122,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   Row(
                     children: const [
-                      Icon(Icons.dark_mode_rounded, color: Color(0xFF6B7AA8)),
+                      Icon(Icons.dark_mode_rounded,
+                          color: Color(0xFF6B7AA8)),
                       SizedBox(width: 12),
                       Text(
                         "Mode sombre",

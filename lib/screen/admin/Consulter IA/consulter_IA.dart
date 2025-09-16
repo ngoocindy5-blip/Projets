@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-const String GEMINI_API_KEY = "AIzaSyCOJNS2gA9FoUZ47epnfEeRxqjRZnwNW10"; // Mets ta clé API Gemini
+const String GEMINI_API_KEY = "AIzaSyCOJNS2gA9FoUZ47epnfEeRxqjRZnwNW10"; // ⚠️ Mets ta vraie clé ici
 
 class ConsulterIAView extends StatefulWidget {
   const ConsulterIAView({super.key});
@@ -19,27 +21,47 @@ class _ConsulterIAViewState extends State<ConsulterIAView> {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
 
+    final user = FirebaseAuth.instance.currentUser;
+    final uid = user?.uid ?? "anonyme";
+
     setState(() {
       _messages.add({"role": "user", "content": text});
       _controller.clear();
       _loading = true;
     });
 
+    // Sauvegarder la question dans Firestore
+    await FirebaseFirestore.instance.collection("ia_consultations").add({
+      "role": "user",
+      "content": text,
+      "createdAt": FieldValue.serverTimestamp(),
+      "adminId": uid,
+    });
+
     try {
       final model = GenerativeModel(
-        model: "gemini-pro",
-        apiKey: GEMINI_API_KEY,
+        model: "gemini-1.5-flash", // ✅ modèle valide
+        apiKey: "AIzaSyCOJNS2gA9FoUZ47epnfEeRxqjRZnwNW10",
       );
 
       final response = await model.generateContent([Content.text(text)]);
-
       final reply = response.text ?? "Aucune réponse.";
+
       setState(() {
         _messages.add({"role": "ai", "content": reply});
       });
+
+      // Sauvegarder la réponse dans Firestore
+      await FirebaseFirestore.instance.collection("ia_consultations").add({
+        "role": "ai",
+        "content": reply,
+        "createdAt": FieldValue.serverTimestamp(),
+        "adminId": uid,
+      });
     } catch (e) {
+      final errorMsg = "Erreur : $e";
       setState(() {
-        _messages.add({"role": "ai", "content": "Erreur : $e"});
+        _messages.add({"role": "ai", "content": errorMsg});
       });
     }
 
@@ -99,6 +121,7 @@ class _ConsulterIAViewState extends State<ConsulterIAView> {
                       hintText: "Posez une question à l’IA...",
                       border: OutlineInputBorder(),
                     ),
+                    onSubmitted: (_) => _sendMessage(),
                   ),
                 ),
                 const SizedBox(width: 8),
