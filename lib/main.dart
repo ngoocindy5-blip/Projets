@@ -1,7 +1,12 @@
 import 'package:bus_easy/screen/admin/home/dashboard_admin.dart';
 import 'package:bus_easy/screen/admin/login.dart';
+import 'package:bus_easy/screen/agence/agency_dashboard.dart';
 import 'package:bus_easy/screen/user_screen/auth/login.dart';
 import 'package:bus_easy/screen/user_screen/landing/landing_user_screen.dart';
+import 'package:bus_easy/screen/user_screen/paiement/payment.dart';
+import 'package:bus_easy/screen/user_screen/reservations/Orange_money_page.dart';
+import 'package:bus_easy/screen/user_screen/reservations/mtn_momo_page.dart';
+import 'package:bus_easy/screen/user_screen/reservations/payment_page.dart';
 import 'package:bus_easy/screen/user_screen/reservations/reservation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -34,7 +39,7 @@ class GlobalVoyagesApp extends StatelessWidget {
         fontFamily: 'Roboto',
       ),
 
-      home: kIsWeb ? const ReservationPage() : const LandingPage(),
+      home: kIsWeb ? const AdminLoginPage() : const LandingPage(),
     );
   }
 }

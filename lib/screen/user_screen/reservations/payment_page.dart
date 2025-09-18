@@ -21,6 +21,12 @@ class _PaymentPageState extends State<PaymentPage> {
         backgroundColor: Colors.blue,
         elevation: 0,
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context); // ✅ Retour à la page précédente
+          },
+        ),
         title: const Text(
           "Mode de Paiement",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -48,11 +54,10 @@ class _PaymentPageState extends State<PaymentPage> {
                   groupValue: _selectedPayment,
                   activeColor: Colors.orange,
                   title: Row(
-                    children: [
-                      const Icon(Icons.account_balance_wallet,
-                          color: Colors.orange),
-                      const SizedBox(width: 10),
-                      const Text(
+                    children: const [
+                      Icon(Icons.account_balance_wallet, color: Colors.orange),
+                      SizedBox(width: 10),
+                      Text(
                         "Orange Money",
                         style: TextStyle(fontSize: 16),
                       ),
@@ -101,17 +106,13 @@ class _PaymentPageState extends State<PaymentPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Étape suivante : redirection vers la page correspondante
+                    // Simule l'action de paiement
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                            "Vous avez choisi : $_selectedPayment (redirection à faire)"),
+                            "Vous avez choisi : $_selectedPayment (redirection simulée)"),
                       ),
                     );
-
-                    // TODO: Naviguer vers la page de paiement réelle
-                    // if (_selectedPayment == "Orange Money") { ... }
-                    // else if (_selectedPayment == "MTN MoMo") { ... }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
