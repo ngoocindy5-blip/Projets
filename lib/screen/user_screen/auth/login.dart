@@ -100,8 +100,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final sz = MediaQuery.of(context).size;
-
     return Scaffold(
       body: Stack(
         children: [
@@ -124,163 +122,177 @@ class _LoginScreenState extends State<LoginScreen> {
           Positioned(bottom: -50, left: -40, child: _BlurDot(size: 150, color: Colors.white)),
 
           SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: sz.height - 56),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 12),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
 
-                    Image.asset('assets/img/Tablet login-rafiki.png', fit: BoxFit.contain, width: 500),
-                    const Text(
-                      'Connexion',
-                      style: TextStyle(
-                        fontSize: 30,
-                        height: 1.1,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.black87,
-                      ),
+                  // Image réduite
+                  SizedBox(
+                    height: 200,
+                    child: Image.asset(
+                      'assets/img/Tablet login-rafiki.png',
+                      fit: BoxFit.contain,
                     ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Connectez-vous pour continuer',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black.withOpacity(.55),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 32),
+                  ),
 
-                    const _FieldLabel('Email'),
-                    const SizedBox(height: 8),
-                    _PillTextField(
-                      controller: _emailCtrl,
-                      hint: 'Entrez votre Email',
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 18),
+                  const SizedBox(height: 20),
 
-                    const _FieldLabel('Mot de passe'),
-                    const SizedBox(height: 8),
-                    _PillTextField(
-                      controller: _pwdCtrl,
-                      hint: 'Entrez votre mot de passe',
-                      obscure: _obscure,
-                      suffixIcon: IconButton(
-                        splashRadius: 20,
-                        onPressed: () => setState(() => _obscure = !_obscure),
-                        icon: Icon(
-                          _obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                          color: Colors.black.withOpacity(.45),
-                        ),
-                      ),
-                    ),
-
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          'Mot de passe oublié ?',
+                  // Contenu scrollable si nécessaire
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Connexion',
                           style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF2E7BFF),
+                            fontSize: 30,
+                            height: 1.1,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black87,
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-
-                    // --- Bouton Login ---
-                    SizedBox(
-                      width: double.infinity,
-                      height: 56,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18),
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF2E7BFF), Color(0xFF2A55FF)],
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF2E7BFF).withOpacity(.25),
-                              blurRadius: 22,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: ElevatedButton(
-                          onPressed: _loading ? null : _login,
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18),
-                            ),
-                            foregroundColor: Colors.white,
-                            textStyle: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          child: _loading
-                              ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                          )
-                              : const Text('Connexion'),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-
-                    // --- Lien Register ---
-                    Center(
-                      child: RichText(
-                        text: TextSpan(
+                        const SizedBox(height: 6),
+                        Text(
+                          'Connectez-vous pour continuer',
                           style: TextStyle(
-                            color: Colors.black.withOpacity(.65),
                             fontSize: 14,
+                            color: Colors.black.withOpacity(.55),
                             fontWeight: FontWeight.w500,
                           ),
-                          children: [
-                            const TextSpan(text: "Vous n'avez pas de compte ? "),
-                            WidgetSpan(
-                              alignment: PlaceholderAlignment.middle,
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
-                                  );
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 2, vertical: 4),
-                                  child: Text(
-                                    'Inscription',
-                                    style: TextStyle(
-                                      color: Color(0xFF2E7BFF),
-                                      fontWeight: FontWeight.w700,
+                        ),
+                        const SizedBox(height: 24),
+
+                        const _FieldLabel('Email'),
+                        const SizedBox(height: 8),
+                        _PillTextField(
+                          controller: _emailCtrl,
+                          hint: 'Entrez votre Email',
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        const SizedBox(height: 16),
+
+                        const _FieldLabel('Mot de passe'),
+                        const SizedBox(height: 8),
+                        _PillTextField(
+                          controller: _pwdCtrl,
+                          hint: 'Entrez votre mot de passe',
+                          obscure: _obscure,
+                          suffixIcon: IconButton(
+                            splashRadius: 20,
+                            onPressed: () => setState(() => _obscure = !_obscure),
+                            icon: Icon(
+                              _obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                              color: Colors.black.withOpacity(.45),
+                            ),
+                          ),
+                        ),
+
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {},
+                            child: const Text(
+                              'Mot de passe oublié ?',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF2E7BFF),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const Spacer(), // Pousse le contenu vers le bas
+
+                        // --- Bouton Login ---
+                        SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18),
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF2E7BFF), Color(0xFF2A55FF)],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFF2E7BFF).withOpacity(.25),
+                                  blurRadius: 22,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
+                            ),
+                            child: ElevatedButton(
+                              onPressed: _loading ? null : _login,
+                              style: ElevatedButton.styleFrom(
+                                elevation: 0,
+                                backgroundColor: Colors.transparent,
+                                shadowColor: Colors.transparent,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                foregroundColor: Colors.white,
+                                textStyle: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              child: _loading
+                                  ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                              )
+                                  : const Text('Connexion'),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+
+                        // --- Lien Register ---
+                        Center(
+                          child: RichText(
+                            text: TextSpan(
+                              style: TextStyle(
+                                color: Colors.black.withOpacity(.65),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              children: [
+                                const TextSpan(text: "Vous n'avez pas de compte ? "),
+                                WidgetSpan(
+                                  alignment: PlaceholderAlignment.middle,
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
+                                      );
+                                    },
+                                    child: const Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+                                      child: Text(
+                                        'Inscription',
+                                        style: TextStyle(
+                                          color: Color(0xFF2E7BFF),
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 24),
+                      ],
                     ),
-
-                    const SizedBox(height: 16),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
