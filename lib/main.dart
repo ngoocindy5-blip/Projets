@@ -1,9 +1,11 @@
-import 'package:bus_easy/screen/User%20screen/Auth/login.dart';
 import 'package:bus_easy/screen/admin/home/dashboard_admin.dart';
 import 'package:bus_easy/screen/admin/login.dart';
+import 'package:bus_easy/screen/agence/agence_loginpage.dart';
+import 'package:bus_easy/screen/agence/agency_dashboard.dart';
 import 'package:bus_easy/screen/user_screen/auth/login.dart';
 import 'package:bus_easy/screen/user_screen/landing/landing_user_screen.dart';
 import 'package:bus_easy/screen/user_screen/reservations/payment_page.dart';
+import 'package:bus_easy/screen/user_screen/reservations/reservation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_core/firebase_core.dart';
@@ -35,7 +37,8 @@ class GlobalVoyagesApp extends StatelessWidget {
         fontFamily: 'Roboto',
       ),
 
-      home: kIsWeb ? const PaymentPage() : const LandingPage(),
+      home: kIsWeb ? const AgenceLoginPage(): const LandingPage(),
+
     );
   }
 }
